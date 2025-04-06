@@ -210,17 +210,35 @@ func add_pawns(board *[8][8]Piece, color string) {
 	}
 }
 
+func add_pieces(board *[8][8]Piece, color string) {
+	if color == "black" {
+		board[0][0] = make_piece(color, "rook", Coord{0, 0})
+		board[0][7] = make_piece(color, "rook", Coord{0, 7})
+		board[0][1] = make_piece(color, "knight", Coord{0, 1})
+		board[0][6] = make_piece(color, "knight", Coord{0, 6})
+		board[0][2] = make_piece(color, "bishop", Coord{0, 2})
+		board[0][5] = make_piece(color, "bishop", Coord{0, 5})
+		board[0][3] = make_piece(color, "queen", Coord{0, 3})
+		board[0][4] = make_piece(color, "king", Coord{0, 4})
+	}
+	if color == "white" {
+		board[7][0] = make_piece(color, "rook", Coord{7, 0})
+		board[7][7] = make_piece(color, "rook", Coord{7, 7})
+		board[7][1] = make_piece(color, "knight", Coord{7, 1})
+		board[7][6] = make_piece(color, "knight", Coord{7, 6})
+		board[7][2] = make_piece(color, "bishop", Coord{7, 2})
+		board[7][5] = make_piece(color, "bishop", Coord{7, 5})
+		board[7][3] = make_piece(color, "queen", Coord{7, 3})
+		board[7][4] = make_piece(color, "king", Coord{7, 4})
+	}
+}
+
 func initiate_board() [8][8]Piece {
 	var board [8][8]Piece
-	add_pawns(&board, "white")
 	add_pawns(&board, "black")
-	// add_pieces()
-	// add_pieces()
-	// for i := 0; i < 8; i++ {
-	// 	for j := 0; j < 8; j++ {
-	// board[i][j] = nil
-	// 	}
-	// }
+	add_pawns(&board, "white")
+	add_pieces(&board, "black")
+	add_pieces(&board, "white")
 	return board
 }
 
@@ -229,14 +247,14 @@ func print_board(board [8][8]Piece) {
 
 	for i := 0; i < 8; i++ {
 		for j := 0; j < 8; j++ {
-            board_rep[i][j] = '-'
-        }
-    }
+			board_rep[i][j] = '-'
+		}
+	}
 	for i := 0; i < 8; i++ {
 		for j := 0; j < 8; j++ {
-            if (board[i][j] != Piece{}) {
-                board_rep[i][j] = board[i][j].repr
-            }
+			if (board[i][j] != Piece{}) {
+				board_rep[i][j] = board[i][j].repr
+			}
 		}
 	}
 	for i := 0; i < 8; i++ {
@@ -249,6 +267,5 @@ func print_board(board [8][8]Piece) {
 
 func main() {
 	board := initiate_board()
-	// p := make_piece("white", "knight", coord{x: 4, y: 4})
 	print_board(board)
 }
