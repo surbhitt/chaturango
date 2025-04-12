@@ -11,3 +11,10 @@ type Piece struct {
 	has_moved bool
 	repr      rune
 }
+
+type Move struct {
+	piece       Piece
+	destination Coord
+}
+
+var EMPTY_PIECE = Piece{name: "", color: ""}
