@@ -148,7 +148,6 @@ func get_knight_moves(pos Coord) []Coord {
 }
 
 func get_pawn_moves(p Piece) []Coord {
-	// TODO: check for first move and allow 2 steps
 	// TODO: cross attack move
 	pos := p.position
 	var dif int
@@ -158,7 +157,7 @@ func get_pawn_moves(p Piece) []Coord {
 		dif = 1
 	}
 	var moves []Coord
-	if p.has_moved != false {
+	if !p.has_moved {
 		// first move 2 steps
 		move := Coord{pos.x + 2*dif, pos.y}
 		if check_board_bound(move) {
@@ -208,39 +207,74 @@ func add_pawns(board *[8][8]Piece, color string) {
 
 func add_pieces(board *[8][8]Piece, color string) {
 	if color == "black" {
-		board[7][0] = make_piece(color, "rook", Coord{0, 0})
-		board[7][7] = make_piece(color, "rook", Coord{0, 7})
-		board[7][1] = make_piece(color, "knight", Coord{0, 1})
-		board[7][6] = make_piece(color, "knight", Coord{0, 6})
-		board[7][2] = make_piece(color, "bishop", Coord{0, 2})
-		board[7][5] = make_piece(color, "bishop", Coord{0, 5})
-		board[7][3] = make_piece(color, "queen", Coord{0, 3})
-		board[7][4] = make_piece(color, "king", Coord{0, 4})
+		board[7][0] = make_piece(color, "rook", Coord{7, 0})
+		board[7][7] = make_piece(color, "rook", Coord{7, 7})
+		board[7][1] = make_piece(color, "knight", Coord{7, 1})
+		board[7][6] = make_piece(color, "knight", Coord{7, 6})
+		board[7][2] = make_piece(color, "bishop", Coord{7, 2})
+		board[7][5] = make_piece(color, "bishop", Coord{7, 5})
+		board[7][3] = make_piece(color, "queen", Coord{7, 3})
+		board[7][4] = make_piece(color, "king", Coord{7, 4})
 	}
 	if color == "white" {
-		board[0][0] = make_piece(color, "rook", Coord{7, 0})
-		board[0][7] = make_piece(color, "rook", Coord{7, 7})
-		board[0][1] = make_piece(color, "knight", Coord{7, 1})
-		board[0][6] = make_piece(color, "knight", Coord{7, 6})
-		board[0][2] = make_piece(color, "bishop", Coord{7, 2})
-		board[0][5] = make_piece(color, "bishop", Coord{7, 5})
-		board[0][3] = make_piece(color, "queen", Coord{7, 3})
-		board[0][4] = make_piece(color, "king", Coord{7, 4})
+		board[0][0] = make_piece(color, "rook", Coord{0, 0})
+		board[0][7] = make_piece(color, "rook", Coord{0, 7})
+		board[0][1] = make_piece(color, "knight", Coord{0, 1})
+		board[0][6] = make_piece(color, "knight", Coord{0, 6})
+		board[0][2] = make_piece(color, "bishop", Coord{0, 2})
+		board[0][5] = make_piece(color, "bishop", Coord{0, 5})
+		board[0][3] = make_piece(color, "queen", Coord{0, 3})
+		board[0][4] = make_piece(color, "king", Coord{0, 4})
 	}
 }
 
 func make_move(board *[8][8]Piece, from Coord, to Coord) {
-    fmt.Println(from.x, from.y)
-    fmt.Println(to.x, to.y)
+    // check if the from and to are board bound
+	if !check_board_bound(from) {
+		fmt.Printf("%s %d [ERR] OUT OF BOARD\n", string('a'+from.y), from.x+1)
+		return
+	}
+	if !check_board_bound(to) {
+		fmt.Printf("%s %d [ERR] OUT OF BOARD\n", string('a'+to.y), to.x+1)
+		return
+	}
+
+    // check if the from sq has a piece
 	piece := board[from.x][from.y]
+	if piece == EMPTY_PIECE {
+		fmt.Printf("no piece found on the square %s %d\n", string('a'+from.y), from.x+1)
+		return
+	}
+
+    // check if the move is valid for the piece on sq from
+	valid_moves := piece.get_valid_moves()
+    is_valid := false
+	for _, valid_move := range valid_moves {
+        if to.x == valid_move.x && to.y == valid_move.y {
+            is_valid = true
+            break
+        }
+	}
+
+    if !is_valid {
+		fmt.Println("Not a valid move for piece")
+		return
+    }
+
 	piece.position = to
+    piece.has_moved = true
 	board[to.x][to.y] = piece
-    // TODO: better way to represent emtpy piece
+	// TODO: better way to represent emtpy piece
 	board[from.x][from.y] = EMPTY_PIECE
 }
 
 func initiate_board() [8][8]Piece {
 	var board [8][8]Piece
+	for i := range 8 {
+		for j := range 8 {
+			board[i][j] = EMPTY_PIECE
+		}
+	}
 	add_pawns(&board, "black")
 	add_pawns(&board, "white")
 	add_pieces(&board, "black")
