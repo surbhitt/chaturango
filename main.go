@@ -7,20 +7,20 @@ import (
 func print_board(board [8][8]Piece) {
 	var board_rep [8][8]rune
 
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 8; j++ {
+	for i := range 8 {
+		for j := range 8 {
 			board_rep[i][j] = '-'
 		}
 	}
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 8; j++ {
+	for i := range 8 {
+        for j := range 8 {
 			if (board[i][j] != Piece{}) {
 				board_rep[i][j] = board[i][j].repr
 			}
 		}
 	}
-	for i := 0; i < 8; i++ {
-		for j := 0; j < 8; j++ {
+	for i := range 8 {
+		for j := range 8 {
 			fmt.Printf("%c ", board_rep[i][j])
 		}
 		fmt.Println()

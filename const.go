@@ -17,4 +17,6 @@ type Move struct {
 	destination Coord
 }
 
+type Board *[8][8]Piece
+
 var EMPTY_PIECE = Piece{name: "", color: ""}
