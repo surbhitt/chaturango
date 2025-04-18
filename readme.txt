@@ -1,10 +1,11 @@
+**Chess engine**
 
-////////////////// Introduction /////////////////////
+![chess cli](/assets/cli.png)
+*cli interface*
 
-Chess engine written in Golang for chaturanga
+## Build
 
-
-/////////////////////// Build ///////////////////////
-
-$ make
+```
+$ make 
 $ make run
+```

@@ -62,7 +62,7 @@ func check_board_bound(pos Coord) bool {
 	return pos.x < 8 && pos.y < 8 && pos.x > -1 && pos.y > -1
 }
 
-func friendly_fire(pos Coord, move Coord, board Board) bool {
+func friendly_fire(pos Coord, move Coord, board *Board) bool {
 	attacker := board[pos.x][pos.y]
 	attacked := board[move.x][move.y]
 	// check if the sq attacked contains a friendly piece
@@ -78,7 +78,7 @@ func friendly_fire(pos Coord, move Coord, board Board) bool {
 		var attack_dir int
 		if pos.x == move.x {
 			attack_dir = 0 // horizontal
-		} else if pos.y == pos.y {
+		} else if pos.y == move.y {
 			attack_dir = 1 // vertical
 		} else {
 			attack_dir = 2 // diagonal
@@ -91,6 +91,9 @@ func friendly_fire(pos Coord, move Coord, board Board) bool {
 		for i := beg_x; i <= end_x; i++ {
 			for j := beg_y; j <= end_y; j++ {
 				collateral := board[i][j]
+                if collateral.position == attacker.position {
+                    continue
+                }
 				if collateral == EMPTY_PIECE {
 					continue
 				}
@@ -108,7 +111,7 @@ func friendly_fire(pos Coord, move Coord, board Board) bool {
 	return false
 }
 
-func get_king_moves(pos Coord, board Board) []Coord {
+func get_king_moves(pos Coord, board *Board) []Coord {
 	var king_moves []Coord
 	// create a square around the pos
 	// all coords in that square except for the original pos
@@ -125,31 +128,31 @@ func get_king_moves(pos Coord, board Board) []Coord {
 	return king_moves
 }
 
-func get_queen_moves(pos Coord, board Board) []Coord {
+func get_queen_moves(pos Coord, board *Board) []Coord {
 	var queen_moves []Coord
 	// extrapolate diagonally, vertically and horizontally
 	for i := -8; i < 8; i++ {
 		move := Coord{pos.x + 0, pos.y + i}
-		if check_board_bound(move) && friendly_fire(pos, move, board) {
+		if check_board_bound(move) && !friendly_fire(pos, move, board) {
 			queen_moves = append(queen_moves, move)
 		}
 		move = Coord{pos.x + i, pos.y + 0}
-		if check_board_bound(move) && friendly_fire(pos, move, board) {
+		if check_board_bound(move) && !friendly_fire(pos, move, board) {
 			queen_moves = append(queen_moves, move)
 		}
 		move = Coord{pos.x + i, pos.y + i}
-		if check_board_bound(move) && friendly_fire(pos, move, board) {
+		if check_board_bound(move) && !friendly_fire(pos, move, board) {
 			queen_moves = append(queen_moves, move)
 		}
 		move = Coord{pos.x + i, pos.y - i}
-		if check_board_bound(move) && friendly_fire(pos, move, board) {
+		if check_board_bound(move) && !friendly_fire(pos, move, board) {
 			queen_moves = append(queen_moves, move)
 		}
 	}
 	return queen_moves
 }
 
-func get_rook_moves(pos Coord, board Board) []Coord {
+func get_rook_moves(pos Coord, board *Board) []Coord {
 	var rook_moves []Coord
 	// extrapolate vertically and horizontally
 	for i := -8; i < 8; i++ {
@@ -165,7 +168,7 @@ func get_rook_moves(pos Coord, board Board) []Coord {
 	return rook_moves
 }
 
-func get_bishop_moves(pos Coord, board Board) []Coord {
+func get_bishop_moves(pos Coord, board *Board) []Coord {
 	var bishop_moves []Coord
 	// extrapolate diagonally
 	for i := -8; i < 8; i++ {
@@ -181,7 +184,7 @@ func get_bishop_moves(pos Coord, board Board) []Coord {
 	return bishop_moves
 }
 
-func get_knight_moves(pos Coord, board Board) []Coord {
+func get_knight_moves(pos Coord, board *Board) []Coord {
 	var knight_moves []Coord
 	possible_moves := [][]int{{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {-1, 2}, {1, 2}, {-1, -2}, {1, -2}}
 	for _, possible_move := range possible_moves {
@@ -193,7 +196,7 @@ func get_knight_moves(pos Coord, board Board) []Coord {
 	return knight_moves
 }
 
-func get_pawn_moves(p Piece, board Board) []Coord {
+func get_pawn_moves(p Piece, board *Board) []Coord {
 	// TODO: cross attack move
 	pos := p.position
 	var dif int
@@ -218,7 +221,7 @@ func get_pawn_moves(p Piece, board Board) []Coord {
 	return moves
 }
 
-func (p Piece) get_valid_moves(board Board) []Coord {
+func (p Piece) get_valid_moves(board *Board) []Coord {
 	switch p.name {
 	case "king":
 		return get_king_moves(p.position, board)
@@ -238,7 +241,7 @@ func (p Piece) get_valid_moves(board Board) []Coord {
 	}
 }
 
-func add_pawns(board Board, color string) {
+func add_pawns(board *Board, color string) {
 	if color == "black" {
 		for i := range 8 {
 			board[6][i] = make_piece(color, "pawn", Coord{6, i})
@@ -251,7 +254,7 @@ func add_pawns(board Board, color string) {
 	}
 }
 
-func add_pieces(board Board, color string) {
+func add_pieces(board *Board, color string) {
 	if color == "black" {
 		board[7][0] = make_piece(color, "rook", Coord{7, 0})
 		board[7][7] = make_piece(color, "rook", Coord{7, 7})
@@ -274,7 +277,7 @@ func add_pieces(board Board, color string) {
 	}
 }
 
-func make_move(board Board, from Coord, to Coord) {
+func make_move(board *Board, from Coord, to Coord) {
 	// check if the from and to are board bound
 	if !check_board_bound(from) {
 		fmt.Printf("%s %d [ERR] OUT OF BOARD\n", string('a'+from.y), from.x+1)
@@ -314,8 +317,8 @@ func make_move(board Board, from Coord, to Coord) {
 	board[from.x][from.y] = EMPTY_PIECE
 }
 
-func initiate_board() [8][8]Piece {
-	var board [8][8]Piece
+func initiate_board() Board {
+	var board Board
 	for i := range 8 {
 		for j := range 8 {
 			board[i][j] = EMPTY_PIECE
