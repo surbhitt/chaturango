@@ -72,40 +72,39 @@ func friendly_fire(pos Coord, move Coord, board *Board) bool {
 		}
 	}
 
-	// check for all other pieces than knight
+	// check for all other pieces except knight
 	// if there is a friendly piece in line of attack
 	if attacker.name != "knight" {
-		var attack_dir int
-		if pos.x == move.x {
-			attack_dir = 0 // horizontal
-		} else if pos.y == move.y {
-			attack_dir = 1 // vertical
-		} else {
-			attack_dir = 2 // diagonal
+		dx := move.x - pos.x
+		dy := move.y - pos.y
+		if dx != 0 {
+			if dx < 0 {
+				dx = -1
+			} else {
+				dx = 1
+			}
 		}
-
-		beg_x := min(pos.x, move.x)
-		beg_y := min(pos.y, move.y)
-		end_x := max(pos.x, move.x)
-		end_y := max(pos.y, move.y)
-		for i := beg_x; i <= end_x; i++ {
-			for j := beg_y; j <= end_y; j++ {
-				collateral := board[i][j]
-                if collateral.position == attacker.position {
-                    continue
-                }
-				if collateral == EMPTY_PIECE {
-					continue
-				}
-				if attack_dir == 2 && i != j {
-					continue
-				}
-				if collateral.color == attacker.color {
-					return true
-				}
+		if dy != 0 {
+			if dy < 0 {
+				dy = -1
+			} else {
+				dy = 1
 			}
 		}
 
+		cur_x := pos.x
+		cur_y := pos.y
+		end_x := move.x
+		end_y := move.y
+
+		for cur_x != end_x || cur_y != end_y {
+			collateral := board[cur_x][cur_y]
+			if collateral.position != attacker.position && collateral.color == attacker.color {
+				return true
+			}
+			cur_x += dx
+			cur_y += dy
+		}
 	}
 
 	return false
@@ -242,39 +241,28 @@ func (p Piece) get_valid_moves(board *Board) []Coord {
 }
 
 func add_pawns(board *Board, color string) {
+	rank := 1
 	if color == "black" {
-		for i := range 8 {
-			board[6][i] = make_piece(color, "pawn", Coord{6, i})
-		}
+		rank = 6
 	}
-	if color == "white" {
-		for i := range 8 {
-			board[1][i] = make_piece(color, "pawn", Coord{1, i})
-		}
+	for file := range 8 {
+		board[rank][file] = make_piece(color, "pawn", Coord{rank, file})
 	}
 }
 
 func add_pieces(board *Board, color string) {
+	rank := 0
 	if color == "black" {
-		board[7][0] = make_piece(color, "rook", Coord{7, 0})
-		board[7][7] = make_piece(color, "rook", Coord{7, 7})
-		board[7][1] = make_piece(color, "knight", Coord{7, 1})
-		board[7][6] = make_piece(color, "knight", Coord{7, 6})
-		board[7][2] = make_piece(color, "bishop", Coord{7, 2})
-		board[7][5] = make_piece(color, "bishop", Coord{7, 5})
-		board[7][3] = make_piece(color, "queen", Coord{7, 3})
-		board[7][4] = make_piece(color, "king", Coord{7, 4})
+		rank = 7
 	}
-	if color == "white" {
-		board[0][0] = make_piece(color, "rook", Coord{0, 0})
-		board[0][7] = make_piece(color, "rook", Coord{0, 7})
-		board[0][1] = make_piece(color, "knight", Coord{0, 1})
-		board[0][6] = make_piece(color, "knight", Coord{0, 6})
-		board[0][2] = make_piece(color, "bishop", Coord{0, 2})
-		board[0][5] = make_piece(color, "bishop", Coord{0, 5})
-		board[0][3] = make_piece(color, "queen", Coord{0, 3})
-		board[0][4] = make_piece(color, "king", Coord{0, 4})
-	}
+	board[rank][0] = make_piece(color, "rook", Coord{rank, 0})
+	board[rank][7] = make_piece(color, "rook", Coord{rank, 7})
+	board[rank][1] = make_piece(color, "knight", Coord{rank, 1})
+	board[rank][6] = make_piece(color, "knight", Coord{rank, 6})
+	board[rank][2] = make_piece(color, "bishop", Coord{rank, 2})
+	board[rank][5] = make_piece(color, "bishop", Coord{rank, 5})
+	board[rank][3] = make_piece(color, "queen", Coord{rank, 3})
+	board[rank][4] = make_piece(color, "king", Coord{rank, 4})
 }
 
 func make_move(board *Board, from Coord, to Coord) {

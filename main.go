@@ -43,13 +43,13 @@ func print_moves(board Board, coord string) {
 			}
 		}
 	}
-	x, _ := strconv.Atoi(string(coord[0]))
-	y, _ := strconv.Atoi(string(coord[1]))
-    fmt.Println(x, y)
+	x := int(coord[0] - 'a')
+	y, err := strconv.Atoi(string(coord[1]))
+	if err == nil {
+		y--
+	}
 	piece := board[x][y]
-    fmt.Printf("%c\n", piece.repr)
 	moves := piece.get_valid_moves(&board)
-    println(len(moves))
 	for _, move := range moves {
 		board_rep[move.x][move.y] = '#'
 	}
