@@ -24,28 +24,31 @@ function render_checkboard() {
             // check if there is a piece 
             // put the piece
             if (board_state[i][j] != "") {
-                console.log(board_state[i][j])
                 let piece = document.createElement('div')
-                piece.style.backgroundImage = "url(assets/pieces/" + board_state[i][j] + ".svg)" 
+                piece.style.backgroundImage = "url(assets/pieces/" + board_state[i][j] + ".svg)"
                 piece.style.width = '100px'
                 piece.style.height = '100px'
-                // piece.style.background = 'red'
                 piece.style.backgroundSize = 'cover'
-                console.log("assets/pieces/" + board_state[i][j] + ".svg")
                 file.appendChild(piece)
-            }
-            // check if it is selected
-            if (i === selected_cell.x && j === selected_cell.y) {
-                file.style.background = "red"
             }
             // assign x and y to data attributes
             file.dataset.x = i
             file.dataset.y = j
             // add event listener to check for click
-            file.addEventListener('click', (event) => {
-                selected_cell.x = Number(event.currentTarget.dataset.x)
-                selected_cell.y = Number(event.currentTarget.dataset.y)
-                render_checkboard()
+            file.addEventListener('click', (element) => {
+                // unselected selected cell
+                if (selected_cell.x != -1) {
+                    let cells = document.getElementsByClassName('selected')
+                    cells[0].classList.remove('selected')
+                }
+
+                let piece = element.currentTarget
+                console.log(piece)
+                piece.classList.add('selected')
+                console.log(piece.classList)
+
+                selected_cell.x = Number(element.currentTarget.dataset.x)
+                selected_cell.y = Number(element.currentTarget.dataset.y)
             }
             )
             rank.appendChild(file)
