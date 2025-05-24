@@ -13,3 +13,7 @@ td {
 td.selected {
     background-color: red;
 }
+
+td.highlighted {
+    background-color: green;
+}

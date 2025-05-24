@@ -11,6 +11,50 @@ board_state = [
     ["r", "n", "b", "q", "k", "b", "n", "r"]
 ]
 
+function clear_highlighted_cells() {
+    let highlighted_cells = document.getElementsByClassName('highlighted')
+    for (let hc of highlighted_cells) {
+        hc.classList.remove('highlighted')
+    }
+}
+
+function highlight_moves(moves) {
+    clear_highlighted_cells()
+
+    for (let i = 0; i < moves.length; i++) {
+        const x = moves[i].x;
+        const y = moves[i].y;
+        const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+        if (cell) {
+            cell.classList.add('highlighted')
+        }
+    }
+}
+
+async function get_moves() {
+    // POST request to server
+    // server then queries the engine
+    try {
+        let res = await fetch('http://localhost:3000/get-moves',
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    { x: selected_cell.x, y: selected_cell.y }
+                )
+            }
+        )
+        res = await res.json()
+        return res.moves
+    } catch (err) {
+        console.log("something went wrong")
+        console.log(err)
+        return []
+    }
+}
+
 function render_checkboard() {
     let container = document.getElementById('container')
     container.innerHTML = '';
@@ -21,8 +65,7 @@ function render_checkboard() {
         rank = document.createElement('tr')
         for (let j = 0; j < 8; j++) {
             file = document.createElement('td')
-            // check if there is a piece 
-            // put the piece
+
             if (board_state[i][j] != "") {
                 let piece = document.createElement('div')
                 piece.style.backgroundImage = "url(assets/pieces/" + board_state[i][j] + ".svg)"
@@ -31,11 +74,11 @@ function render_checkboard() {
                 piece.style.backgroundSize = 'cover'
                 file.appendChild(piece)
             }
-            // assign x and y to data attributes
+
             file.dataset.x = i
             file.dataset.y = j
-            // add event listener to check for click
-            file.addEventListener('click', (element) => {
+
+            file.addEventListener('click', async (element) => {
                 // unselected selected cell
                 if (selected_cell.x != -1) {
                     let cells = document.getElementsByClassName('selected')
@@ -43,12 +86,14 @@ function render_checkboard() {
                 }
 
                 let piece = element.currentTarget
-                console.log(piece)
                 piece.classList.add('selected')
-                console.log(piece.classList)
 
                 selected_cell.x = Number(element.currentTarget.dataset.x)
                 selected_cell.y = Number(element.currentTarget.dataset.y)
+
+                let moves = await get_moves()
+
+                highlight_moves(moves)
             }
             )
             rank.appendChild(file)
