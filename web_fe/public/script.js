@@ -1,20 +1,20 @@
 let selected_cell = { x: -1, y: -1 }
 
 board_state = [
-    ["R", "N", "B", "Q", "K", "B", "N", "R"],
+    ["R", "N", "B", "K", "Q", "B", "N", "R"],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
-    ["r", "n", "b", "q", "k", "b", "n", "r"]
+    ["r", "n", "b", "k", "q", "b", "n", "r"]
 ]
 
 function clear_highlighted_cells() {
-    let highlighted_cells = document.getElementsByClassName('highlighted')
+    let highlighted_cells = Array.from(document.getElementsByClassName('highlighted'));
     for (let hc of highlighted_cells) {
-        hc.classList.remove('highlighted')
+        hc.classList.remove('highlighted');
     }
 }
 

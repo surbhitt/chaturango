@@ -64,23 +64,21 @@ func print_moves(board Board, coord string) {
 
 func main() {
 	board := initiate_board()
-	print_board(board)
 	var notation string
-	// var moves []Move
 	for {
 		fmt.Scan(&notation)
-		if notation == "m" {
-			var coord string
-			fmt.Scan(&coord)
-			print_moves(board, coord)
-			continue
-		} else {
-			from_to := parse_notation(notation)
-			make_move(&board, from_to[0], from_to[1])
-			print_board(board)
+		coord := a1not_to_xycoord(notation)
+		piece := board[coord.x][coord.y]
+		moves := piece.get_valid_moves(&board)
+		for _, move := range moves {
+			fmt.Println(xycoord_to_a1not(move))
 		}
+		fmt.Println("readyok")
 	}
-	// TODO
-	// you click on a piece and get the valid moves list
-	// you make a valid move
 }
+
+// func main() {
+// 	test := Coord{7, 7}
+// 	fmt.Println(xycoord_to_a1not(test))
+// 	fmt.Println(a1not_to_xycoord(xycoord_to_a1not(test)).x, a1not_to_xycoord(xycoord_to_a1not(test)).y)
+// }

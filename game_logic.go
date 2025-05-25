@@ -256,13 +256,13 @@ func add_pieces(board *Board, color string) {
 		rank = 7
 	}
 	board[rank][0] = make_piece(color, "rook", Coord{rank, 0})
-	board[rank][7] = make_piece(color, "rook", Coord{rank, 7})
 	board[rank][1] = make_piece(color, "knight", Coord{rank, 1})
-	board[rank][6] = make_piece(color, "knight", Coord{rank, 6})
 	board[rank][2] = make_piece(color, "bishop", Coord{rank, 2})
+	board[rank][3] = make_piece(color, "king", Coord{rank, 4})
+	board[rank][4] = make_piece(color, "queen", Coord{rank, 3})
 	board[rank][5] = make_piece(color, "bishop", Coord{rank, 5})
-	board[rank][3] = make_piece(color, "queen", Coord{rank, 3})
-	board[rank][4] = make_piece(color, "king", Coord{rank, 4})
+	board[rank][6] = make_piece(color, "knight", Coord{rank, 6})
+	board[rank][7] = make_piece(color, "rook", Coord{rank, 7})
 }
 
 func make_move(board *Board, from Coord, to Coord) {
