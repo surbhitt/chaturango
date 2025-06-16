@@ -1,0 +1,20 @@
+
+Original: https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf#file-uci-protocol-specification-txt-L8
+
+Following is the limited set of functionality supported.
+
+Description
+-------------
+
+1. Accepts long algebraic notation e.g. e2e4
+2. [NOT IMPLEMENTED] SHOULD always accept stdin even while busy
+3. Expected '\n' seperated commands
+4. LOG warning for unrecognised commands, SHOULD NOT throw error
+
+Commands
+-------------
+
+1. 'isready': Accepts from stdin command to reset parameters, returns 'ok' to stdout
+2. 'validmoves\n<cell>': Return the valid moves for the piece on <cell> ''
+3. 'makemove\n<from_cell> <to_cell>': Update board state for legal move
+4. 'position <fenstring>' [NOT IMPLEMENTED]: Parse the passed fen string to setup the board and use it as the initial position

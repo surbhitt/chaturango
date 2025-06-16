@@ -64,21 +64,34 @@ func print_moves(board Board, coord string) {
 
 func main() {
 	board := initiate_board()
-	var notation string
+	var command string
 	for {
-		fmt.Scan(&notation)
-		coord := a1not_to_xycoord(notation)
-		piece := board[coord.x][coord.y]
-		moves := piece.get_valid_moves(&board)
-		for _, move := range moves {
-			fmt.Println(xycoord_to_a1not(move))
+		fmt.Scan(&command)
+		if command == "isready" {
+			/// ok
+		} else if command == "validmoves" {
+			var notation string
+			fmt.Scan(&notation)
+			coord := a1not_to_xycoord(notation)
+			piece := board[coord.x][coord.y]
+			moves := piece.get_valid_moves(&board)
+			for _, move := range moves {
+				fmt.Println(xycoord_to_a1not(move))
+			}
+		} else if command == "makemove" {
+			var from, to string
+			fmt.Scan(&from)
+			fmt.Scan(&to)
+			from_coord := a1not_to_xycoord(from)
+			to_coord := a1not_to_xycoord(to)
+			fmt.Println(from)
+			fmt.Println(to)
+			make_move(&board, from_coord, to_coord)
+			print_board(board)
+			// TODO should indicate if the move is invalid
+		} else {
+			fmt.Println("[WARN] Unindentified command", command)
 		}
-		fmt.Println("readyok")
+		fmt.Println("ok")
 	}
 }
-
-// func main() {
-// 	test := Coord{7, 7}
-// 	fmt.Println(xycoord_to_a1not(test))
-// 	fmt.Println(a1not_to_xycoord(xycoord_to_a1not(test)).x, a1not_to_xycoord(xycoord_to_a1not(test)).y)
-// }
