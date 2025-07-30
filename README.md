@@ -7,5 +7,5 @@ Complemented by 2 frontends—CLI based & browser based.
 
 | Frontend | Build Command | Preview |
 |----------|---------------|---------|
-| **CLI**  | <pre>$ make<br>$ make run</pre> | ![CLI Preview](/assets/cli.png) |
 | **Web**  | <pre>$ cd web_fe<br>$ npm start</pre> | ![Web Preview](/assets/web.png) |
+| **CLI**  | <pre>$ make<br>$ make run</pre> | ![CLI Preview](/assets/cli.png) |
